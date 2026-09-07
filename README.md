@@ -4,7 +4,7 @@ VRM Manager is an Astra plugin for managing local VRM models, VRoid Hub models, 
 
 **Author:** denchik  
 **License:** MIT  
-**Version:** 1.1.5
+**Version:** 1.1.6
 
 ![VRM Manager](icon.png)
 
@@ -23,7 +23,7 @@ VRM Manager is an Astra plugin for managing local VRM models, VRoid Hub models, 
 
 ## Astra import
 
-`Import to Astra` does not automate clicks in the Astra window. It detects the Astra Character Library on the local Windows installation and registers the model by creating/updating:
+`Import to Astra` does not automate clicks in the Astra window. It detects the Astra Character Library on the local Windows installation and registers the model by creating or updating:
 
 - `pack/models/<model>.vrm`
 - `pack/characters/<character>/character.toml`
@@ -56,10 +56,3 @@ npm run check
 
 astra-plugin check . --strict
 astra-plugin test .
-```
-
-Publishing is performed by Astra's GitHub CI workflow. Do not attach a locally built `.astraplugin` as the catalogue release artifact.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
