@@ -1,6 +1,6 @@
-﻿{
+{
   "name": "vroid-manager",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "private": true,
   "type": "commonjs",
   "scripts": {
@@ -17,5 +17,3 @@
   },
   "main": "dist/index.js"
 }
-
-

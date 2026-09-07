@@ -1,7 +1,7 @@
 [plugin]
 id = "denchik-vroid-manager"
 name = "VRM Manager"
-version = "1.1.6"
+version = "1.1.7"
 description = "VRoid Hub library, VRM editor and accessory manager"
 author = "denchik"
 license = "MIT"
