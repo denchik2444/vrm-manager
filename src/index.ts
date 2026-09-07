@@ -107,16 +107,27 @@ async function walkVrmFiles(dir:string):Promise<string[]>{
 }
 async function listModels(){
  const paths=await walkVrmFiles(LIB);
- const result=await Promise.all(paths.map(async path=>{
+ const result:any[]=[];
+ // Astra limits tool responses to 4 MiB. Keep thumbnails small and
+ // cap their combined payload so the library tool remains safe even
+ // with many large VRM previews.
+ const MAX_PREVIEW_CHARS=96*1024;
+ const MAX_PREVIEW_TOTAL=768*1024;
+ let previewTotal=0;
+ state.recentMeta=state.recentMeta||{};
+ for(const path of paths){
   const st=await fs.stat(path);
-  let preview=state.recentMeta?.[path]?.preview;
-  if(!preview){
+  let preview=state.recentMeta[path]?.preview;
+  if(typeof preview!=="string" || preview.length>MAX_PREVIEW_CHARS){
    preview=await extractThumbnail(path)||undefined;
-   state.recentMeta=state.recentMeta||{};
-   state.recentMeta[path]={...(state.recentMeta[path]||{}),preview};
   }
-  return{name:basename(path),path,size:st.size,modified:st.mtime.toISOString(),preview};
- }));
+  if(preview && (preview.length>MAX_PREVIEW_CHARS || previewTotal+preview.length>MAX_PREVIEW_TOTAL)){
+   preview=undefined;
+  }
+  state.recentMeta[path]={...(state.recentMeta[path]||{}),preview};
+  if(preview) previewTotal+=preview.length;
+  result.push({name:basename(path),path,size:st.size,modified:st.mtime.toISOString(),preview});
+ }
  await saveState();
  return result;
 }

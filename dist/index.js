@@ -199,16 +199,24 @@ async function walkVrmFiles(dir) {
 }
 async function listModels() {
   const paths = await walkVrmFiles(LIB);
-  const result = await Promise.all(paths.map(async (path) => {
+  const result = [];
+  const MAX_PREVIEW_CHARS = 96 * 1024;
+  const MAX_PREVIEW_TOTAL = 768 * 1024;
+  let previewTotal = 0;
+  state.recentMeta = state.recentMeta || {};
+  for (const path of paths) {
     const st = await import_node_fs.promises.stat(path);
-    let preview = state.recentMeta?.[path]?.preview;
-    if (!preview) {
+    let preview = state.recentMeta[path]?.preview;
+    if (typeof preview !== "string" || preview.length > MAX_PREVIEW_CHARS) {
       preview = await extractThumbnail(path) || void 0;
-      state.recentMeta = state.recentMeta || {};
-      state.recentMeta[path] = { ...state.recentMeta[path] || {}, preview };
     }
-    return { name: (0, import_node_path.basename)(path), path, size: st.size, modified: st.mtime.toISOString(), preview };
-  }));
+    if (preview && (preview.length > MAX_PREVIEW_CHARS || previewTotal + preview.length > MAX_PREVIEW_TOTAL)) {
+      preview = void 0;
+    }
+    state.recentMeta[path] = { ...state.recentMeta[path] || {}, preview };
+    if (preview) previewTotal += preview.length;
+    result.push({ name: (0, import_node_path.basename)(path), path, size: st.size, modified: st.mtime.toISOString(), preview });
+  }
   await saveState();
   return result;
 }
