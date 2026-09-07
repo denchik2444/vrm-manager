@@ -1,0 +1,30 @@
+[plugin]
+id = "denchik-vroid-manager"
+name = "VRM Manager"
+version = "1.1.5"
+description = "VRoid Hub library, VRM editor and accessory manager"
+author = "denchik"
+license = "MIT"
+call_timeout_secs = 7200
+
+[entry]
+command = "node"
+args = ["dist/index.js"]
+runtimes = ["node"]
+
+[capabilities]
+tools = true
+ui_contributions = true
+
+[platform]
+os = ["windows"]
+arch = ["x86_64"]
+
+[permissions]
+set_variable = { reason = "Передаёт выбранную VRM-модель Astra как активную модель для использования." , scopes = ["session"] }
+send_chat_message = { reason = "Позволяет кнопке «Использовать в Astra» передать Astra запрос на использование выбранной VRM-модели." }
+
+[config]
+schema = """
+{"type":"object","properties":{}}
+"""
